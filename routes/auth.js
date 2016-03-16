@@ -25,9 +25,10 @@ passport.use(new GoogleStrategy({
             last_name: profile.name.familyName,
             email: profile.emails[0].value,
             user_image: profile.photos[0].value
-          })
+          }, '*')
           .then(function(userid){
-            return done(null, userid);
+            console.log('created user', userid);
+            return done(null, userid[0]);
           })
         }
       })
@@ -45,19 +46,8 @@ router.get('/google/callback', function(req, res, next) {
      } else if (user) {
        console.log('this is the user object: ', user);
        var token = jwt.sign(user, "123", {
-         expiresIn:15778463,
+         expiresIn:'1d',
        })
-
-      //  Server side token handling:::
-      //  var tokenContent = base64url.decode(token);
-      //  var body = tokenContent.split('.');
-      //  console.log('body length', body.length);
-      //  var bodyArray = [];
-      //  for(i=0;i<body.length;i = i +1){
-      //    var part = body[i]
-      //    bodyArray.push(part);
-      //  }
-
        var authUrl = "http://localhost:8080/#/validating/" + token;
        res.redirect(authUrl);
      } else if (info) {
@@ -66,7 +56,6 @@ router.get('/google/callback', function(req, res, next) {
    })(req, res, next);
  });
  router.get('/google', passport.authenticate('google', {
-     // scope: 'profile'
      scope: 'email',
    }),
    function(req, res) {

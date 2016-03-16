@@ -8,18 +8,17 @@ exports.up = function(knex, Promise) {
       table.string('email');
       table.string('user_image');
     }),
-    knex.schema.createTable('collection', function(table){
-      table.increments().primary();
-      table.string('title');
-    }),
     knex.schema.createTable('work', function(table){
       table.increments().primary();
+      table.string('title');
       table.text('text_content');
       table.text('image_content');
-      table.text('hastag');
+      table.text('hashtag');
       table.boolean('for_sale');
+      table.integer('price');
       table.integer('likes');
-      table.text('comment');
+      table.text('comments');
+      table.string('user_id');
     })
   ])
 };
@@ -27,7 +26,6 @@ exports.up = function(knex, Promise) {
 exports.down = function(knex, Promise) {
   return Promise.all([
     knex.schema.dropTableIfExists('user_table'),
-    knex.schema.dropTableIfExists('collection'),
-    knex.schema.dropTableIfExists('work'),
+    knex.schema.dropTableIfExists('work')
   ])
 };

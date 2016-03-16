@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var cors= require('cors')
 var auth = require('./routes/auth');
 var routes = require('./routes/index');
+var content = require('./routes/content');
 var users = require('./routes/users');
 var db = require('knex');
 var knex = require('./db/knex');
@@ -21,12 +22,8 @@ var base64url = require("base64-url")
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-
 // Middleware!
 // Will run before all other routes, because it is defined ABOVE all other routes
-
-///////////////
-
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -39,10 +36,59 @@ app.use(cors());
 app.use('/', routes);
 app.use('/users', users);
 app.use('/auth', auth);
+app.use('/content', content);
 
-app.use('/getusers',tokenAuthenticated, function(req, res, next){
+app.use(tokenAuthenticated);
+
+app.use('/getusers', function(req, res, next){
   knex('user_table').select().then(function(users){
     res.json({users: users})
+  })
+})
+
+app.get('/postview/:id', function(req, res, next){
+  var postId = req.params.id;
+  knex('work').first().where('id', postId).then(function(post){
+    res.json({post: post});
+  })
+})
+
+app.get('/profile/:id', function(req, res, next){
+  var userId = req.params.id;
+  console.log('here\'s taht user id you wanted: ', userId);
+  knex('user_table').first().where('id', userId).then(function(user){
+    res.json({user: user})
+  })
+})
+
+app.post('/submitpost', function(req, res, next){
+  if(req.user){
+    console.log('got your post! Thanks a bunch!');
+    console.log('this is user id', req.user.id);
+    var userID = req.user.id;
+    knex('work').insert({
+      title: req.body.title,
+      text_content: req.body.text,
+      image_content: req.body.images,
+      hashtag: req.body.hashtags,
+      for_sale: req.body.forsale || null,
+      price: req.body.price || null,
+      likes: '' || null,
+      comments: '' || null,
+      user_id: userID
+    }, 'id').then(function(id){
+      console.log(req.user.id);
+      console.log(id);
+      res.json({id: id})
+    })
+  } else {
+    res.json({message: "unauthorized"});
+  }
+})
+
+app.get('/allposts', function(req, res, next){
+  knex('work').select().then(function(data){
+    res.json({data: data})
   })
 })
 
@@ -78,25 +124,21 @@ app.use(function(err, req, res, next) {
 });
 
 function tokenAuthenticated(req, res, next){
- // check header or url parameters or post parameters for token
  var token = req.body.token || req.query.token || req.headers.token;
- // decode token
  if (token) {
-   console.log('Got token');
- // verifies secret and checks exp
-   jwt.verify(token, 123, function(err, decoded) {
+   console.log('Got token', token);
+   jwt.verify(token, "123", function(err, decoded) {
      if (err) {
+       console.log(err);
        return res.json({ success: false, message: 'Failed to authenticate token.' });
      } else {
        console.log('token is good');
-       // if everything is good, save to request for use in other routes
-       req.decoded = decoded;
+       req.user = decoded;
+       console.log(decoded);
        next();
      }
    });
   } else {
-   // if there is no token
- // return an error
  return res.status(403).send({
      success: false,
      message: 'No token provided.'
