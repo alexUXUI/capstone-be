@@ -46,6 +46,13 @@ app.use('/getusers', function(req, res, next){
   })
 })
 
+app.get('/shopping/:id', function(req, res, next){
+  var workId = req.params.id;
+  knex('work').first().where('id', workId).then(function(data){
+    res.json({data: data})
+  })
+})
+
 app.get('/postview/:id', function(req, res, next){
   var postId = req.params.id;
   knex('work').first().where('id', postId).then(function(post){
@@ -55,9 +62,49 @@ app.get('/postview/:id', function(req, res, next){
 
 app.get('/profile/:id', function(req, res, next){
   var userId = req.params.id;
-  console.log('here\'s taht user id you wanted: ', userId);
-  knex('user_table').first().where('id', userId).then(function(user){
-    res.json({user: user})
+  console.log('hitting the PROFILE ROUTE');
+  function getUserProfileInfo(userId){
+    console.log('is this function firing??', userId);
+    return Promise.all([
+      knex('user_table').select(
+        'work.id as post_id',
+        'user_table.id as user',
+        'work.created_at as post_created_at',
+        'work.title as post_title',
+        'work.text_content as text',
+        'work.image_content as image',
+        'work.price as price',
+        'work.for_sale as forSale',
+        'work.hashtag as hashtag',
+        'work.likes as likes',
+        'work.comments as comments'
+      ).innerJoin('work', 'work.user_id', 'user_table.id')
+        .where('user_table.id', userId)
+        .orderBy('post_created_at', 'desc'),
+      knex('user_table').select(
+        'user_table.id as id',
+        'user_table.user_image as photo',
+        'user_table.email as email',
+        'user_table.first_name as first',
+        'user_table.last_name as last'
+      ).where('id', userId).first()
+    ]).then(function(data){
+      console.log('is there data coming down the pipeline??', data);
+        return Promise.resolve({
+          user: data[1],
+          userposts: data[0]
+        });
+    }).catch(function(err){
+      console.log('IS THIS EVEN CATCHING????');
+      console.log(err);
+    })
+  }
+  getUserProfileInfo(userId).then(function(data){
+    console.log("is there even a result set???");
+    console.log('down the pipe: ', data);
+    res.json({"data": data})
+  }).catch(function(err){
+    console.log('last chance', err);
   })
 })
 
