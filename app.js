@@ -13,10 +13,13 @@ var db = require('knex');
 var knex = require('./db/knex');
 var jwt = require('jsonwebtoken');
 var app = express();
-var base64url = require("base64-url")
+var base64url = require("base64-url");
+var passport = require('passport');
+var paypal = require('paypal-rest-sdk');
+var paypalRoute = require('./routes/paypal');
+var PaypalTokenStrategy = require('passport-paypal-token');
+var session = require('express-session');
 
-// var passport = require('passport');
-// var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -27,16 +30,23 @@ app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true
+}));
+
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
-app.use('/', routes);
 app.use('/users', users);
 app.use('/auth', auth);
 app.use('/content', content);
+app.use('/paypal', paypalRoute);
+app.use('/', routes);
 
 app.use(tokenAuthenticated);
 
@@ -137,6 +147,39 @@ app.get('/allposts', function(req, res, next){
   knex('work').select().then(function(data){
     res.json({data: data})
   })
+  // return Promise.all([
+  //   knex('user_table').select(
+  //     'work.id as post_id',
+  //     'user_table.id as user',
+  //     'work.created_at as post_created_at',
+  //     'work.title as post_title',
+  //     'work.text_content as text',
+  //     'work.image_content as image',
+  //     'work.price as price',
+  //     'work.for_sale as forSale',
+  //     'work.hashtag as hashtag',
+  //     'work.likes as likes',
+  //     'work.comments as comments'
+  //   ).innerJoin('work', 'work.user_id', 'user_table.id')
+  //     .where('user_table.id', userId)
+  //     .orderBy('post_created_at', 'desc'),
+  //   knex('user_table').select(
+  //     'user_table.id as id',
+  //     'user_table.user_image as photo',
+  //     'user_table.email as email',
+  //     'user_table.first_name as first',
+  //     'user_table.last_name as last'
+  //   ).where('id', userId).first()
+  // ]).then(function(data){
+  //   console.log('is there data coming down the pipeline??', data);
+  //     return Promise.resolve({
+  //       user: data[1],
+  //       userposts: data[0]
+  //     });
+  // }).catch(function(err){
+  //   console.log('IS THIS EVEN CATCHING????');
+  //   console.log(err);
+  // })
 })
 
 // catch 404 and forward to error handler

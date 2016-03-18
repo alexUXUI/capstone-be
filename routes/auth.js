@@ -6,6 +6,18 @@ var db = require('knex');
 var knex = require('../db/knex');
 var jwt = require('jsonwebtoken');
 var base64url = require("base64-url");
+var PaypalTokenStrategy = require('passport-paypal-token');
+
+passport.use(new PaypalTokenStrategy({
+    clientID: 'ARPGDP8XfK_IilyUmwT2yDojtxHeFnvNPkOKem1of_2SMHm29fKlawvsiHF_hb6C8gw99kHfmR6TW_B6',
+    clientSecret: 'EK-GsYpIupfZDiaSESNz_7nOFYwpTBnEu_ltEa9TkIGC1A50Nt2pCMkIt7pUhoUw0slbqAMarBWMsoyF',
+    openid_redirect_uri: 'http://localhost:3000/paypal',
+    passReqToCallback: true
+}, function(req, accessToken, refreshToken, profile, next) {
+    User.findOrCreate({'paypal.id': profile.id}, function(error, user) {
+        return next(error, user);
+    });
+}));
 
 passport.use(new GoogleStrategy({
     clientID: '584410631450-198uljradcms25p3nl7j8k4ghgnmjovu.apps.googleusercontent.com',
@@ -55,6 +67,7 @@ router.get('/google/callback', function(req, res, next) {
      }
    })(req, res, next);
  });
+
  router.get('/google', passport.authenticate('google', {
      scope: 'email',
    }),
