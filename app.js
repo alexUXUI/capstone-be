@@ -65,8 +65,27 @@ app.get('/shopping/:id', function(req, res, next){
 
 app.get('/postview/:id', function(req, res, next){
   var postId = req.params.id;
-  knex('work').first().where('id', postId).then(function(post){
-    res.json({post: post});
+  // knex('work').first().where('id', postId).then(function(post){
+  //   res.json({post: post});
+  // })
+
+  knex('work').select(
+      'work.id as post_number',
+      'work.created_at as post_created_at',
+      'work.title as post_title',
+      'work.text_content as posts_body',
+      'work.user_id as user_id',
+      'work.image_content as photo_url',
+      'user_table.first_name as username',
+      'user_table.user_image as user_photo',
+      'work.for_sale as forsale',
+      'work.price as price',
+      'work.likes as likes',
+      'work.comments as comments'
+    ).innerJoin("user_table", "work.user_id", "user_table.id")
+    // .where({'post_number': postId})
+    .then(function(post){
+    res.json({post: post})
   })
 })
 
@@ -74,7 +93,6 @@ app.get('/profile/:id', function(req, res, next){
   var userId = req.params.id;
   console.log('hitting the PROFILE ROUTE');
   function getUserProfileInfo(userId){
-    console.log('is this function firing??', userId);
     return Promise.all([
       knex('user_table').select(
         'work.id as post_id',
@@ -99,19 +117,15 @@ app.get('/profile/:id', function(req, res, next){
         'user_table.last_name as last'
       ).where('id', userId).first()
     ]).then(function(data){
-      console.log('is there data coming down the pipeline??', data);
         return Promise.resolve({
           user: data[1],
           userposts: data[0]
         });
     }).catch(function(err){
-      console.log('IS THIS EVEN CATCHING????');
       console.log(err);
     })
   }
   getUserProfileInfo(userId).then(function(data){
-    console.log("is there even a result set???");
-    console.log('down the pipe: ', data);
     res.json({"data": data})
   }).catch(function(err){
     console.log('last chance', err);
@@ -120,7 +134,6 @@ app.get('/profile/:id', function(req, res, next){
 
 app.post('/submitpost', function(req, res, next){
   if(req.user){
-    console.log('got your post! Thanks a bunch!');
     console.log('this is user id', req.user.id);
     var userID = req.user.id;
     knex('work').insert({
@@ -144,42 +157,23 @@ app.post('/submitpost', function(req, res, next){
 })
 
 app.get('/allposts', function(req, res, next){
-  knex('work').select().then(function(data){
+  knex('work').select(
+      'work.id as post_number',
+      'work.created_at as post_created_at',
+      'work.title as post_title',
+      'work.text_content as posts_body',
+      'work.user_id as user_id',
+      'work.image_content as photo_url',
+      'user_table.first_name as username',
+      'user_table.user_image as user_photo',
+      'work.for_sale as forsale',
+      'work.price as price',
+      'work.likes as likes',
+      'work.comments as comments'
+    ).innerJoin("user_table", "work.user_id", "user_table.id")
+    .orderBy('post_created_at', 'desc').then(function(data){
     res.json({data: data})
   })
-  // return Promise.all([
-  //   knex('user_table').select(
-  //     'work.id as post_id',
-  //     'user_table.id as user',
-  //     'work.created_at as post_created_at',
-  //     'work.title as post_title',
-  //     'work.text_content as text',
-  //     'work.image_content as image',
-  //     'work.price as price',
-  //     'work.for_sale as forSale',
-  //     'work.hashtag as hashtag',
-  //     'work.likes as likes',
-  //     'work.comments as comments'
-  //   ).innerJoin('work', 'work.user_id', 'user_table.id')
-  //     .where('user_table.id', userId)
-  //     .orderBy('post_created_at', 'desc'),
-  //   knex('user_table').select(
-  //     'user_table.id as id',
-  //     'user_table.user_image as photo',
-  //     'user_table.email as email',
-  //     'user_table.first_name as first',
-  //     'user_table.last_name as last'
-  //   ).where('id', userId).first()
-  // ]).then(function(data){
-  //   console.log('is there data coming down the pipeline??', data);
-  //     return Promise.resolve({
-  //       user: data[1],
-  //       userposts: data[0]
-  //     });
-  // }).catch(function(err){
-  //   console.log('IS THIS EVEN CATCHING????');
-  //   console.log(err);
-  // })
 })
 
 // catch 404 and forward to error handler
