@@ -9,8 +9,8 @@ var base64url = require("base64-url");
 var PaypalTokenStrategy = require('passport-paypal-token');
 
 passport.use(new PaypalTokenStrategy({
-    clientID: '934498239022-pcfu63fbff1399mm6ghj8kcnfnpcqkva.apps.googleusercontent.com',
-    clientSecret: 'EK-BdABY8vW57ONdQNfUAuEL-EB',
+    clientID: 'ARPGDP8XfK_IilyUmwT2yDojtxHeFnvNPkOKem1of_2SMHm29fKlawvsiHF_hb6C8gw99kHfmR6TW_B6',
+    clientSecret: 'EK-GsYpIupfZDiaSESNz_7nOFYwpTBnEu_ltEa9TkIGC1A50Nt2pCMkIt7pUhoUw0slbqAMarBWMsoyF',
     openid_redirect_uri: 'http://localhost:3000/paypal',
     passReqToCallback: true
 }, function(req, accessToken, refreshToken, profile, next) {
@@ -20,9 +20,9 @@ passport.use(new PaypalTokenStrategy({
 }));
 
 passport.use(new GoogleStrategy({
-    clientID: '584410631450-198uljradcms25p3nl7j8k4ghgnmjovu.apps.googleusercontent.com',
-    clientSecret: 'Mp4vMZMwuvO9DLl-_DwVjplY',
-    callbackURL: 'https://rebelmarkets.firebaseapp.com/#/google/callback'
+    clientID: '934498239022-pcfu63fbff1399mm6ghj8kcnfnpcqkva.apps.googleusercontent.com',
+    clientSecret: 'BdABY8vW57ONdQNfUAuEL-EB',
+    callbackURL: 'https://rebelmarkets.firebaseapp.com/google/callback'
   },
   function(req, token, refreshToken, profile, done) {
     process.nextTick(function() {
