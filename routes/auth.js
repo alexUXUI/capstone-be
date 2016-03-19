@@ -22,7 +22,7 @@ passport.use(new PaypalTokenStrategy({
 passport.use(new GoogleStrategy({
     clientID: '934498239022-pcfu63fbff1399mm6ghj8kcnfnpcqkva.apps.googleusercontent.com',
     clientSecret: 'BdABY8vW57ONdQNfUAuEL-EB',
-    callbackURL: 'https://rebelmarkets.firebaseapp.com/'
+    callbackURL: 'https://rebelmarkets.firebaseapp.com'
   },
   function(req, token, refreshToken, profile, done) {
     process.nextTick(function() {
