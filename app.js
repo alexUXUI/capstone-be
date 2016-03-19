@@ -20,7 +20,6 @@ var paypalRoute = require('./routes/paypal');
 var PaypalTokenStrategy = require('passport-paypal-token');
 var session = require('express-session');
 
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -47,12 +46,17 @@ app.use('/auth', auth);
 app.use('/content', content);
 app.use('/paypal', paypalRoute);
 app.use('/', routes);
-
 app.use(tokenAuthenticated);
 
-app.use('/getusers', function(req, res, next){
+app.get('/getusers', function(req, res, next){
   knex('user_table').select().then(function(users){
     res.json({users: users})
+  })
+})
+
+app.get('/trending/hastags', function(req, res, next){
+  knex('work').select('hashtag').distinct().then(function(data){
+    res.json({data: data})
   })
 })
 
@@ -132,6 +136,15 @@ app.get('/profile/:id', function(req, res, next){
   })
 })
 
+app.get('/post/like/:id', function(req, res, next){
+  var workId = req.params.id;
+  console.log('hitting like route with this work id: ', workId);
+  knex('work').where('id', workId).increment('likes', 1)
+  .then(function(data){
+    res.json({data: data})
+  })
+})
+
 app.post('/submitpost', function(req, res, next){
   if(req.user){
     console.log('this is user id', req.user.id);
@@ -156,6 +169,19 @@ app.post('/submitpost', function(req, res, next){
   }
 })
 
+app.post('/submit/comment/:id', function(req, res, next){
+  var id = req.params.id;
+  var user = req.params.user;
+  console.log('HITTIN ADD A FUCKIN COMMENT with: ', id, user);
+  knex('comments').insert({
+    text: req.body.text,
+    user: id
+  }).then(function(data){
+    console.log('heres that fuckin data: ', data);
+    res.json({data:data})
+  })
+})
+
 app.get('/allposts', function(req, res, next){
   knex('work').select(
       'work.id as post_number',
@@ -163,6 +189,7 @@ app.get('/allposts', function(req, res, next){
       'work.title as post_title',
       'work.text_content as posts_body',
       'work.user_id as user_id',
+      'work.hashtag as hashtag',
       'work.image_content as photo_url',
       'user_table.first_name as username',
       'user_table.user_image as user_photo',
@@ -229,5 +256,13 @@ function tokenAuthenticated(req, res, next){
  });
  }
 }
+
+// knex('work').select(
+//   'work.id as post_number',
+//   'user_table.id as user_id',
+//   'comments.work_id as work_id',
+//   'comments.text as comment_text'
+// ).innerJoin('user_table', 'post_number', 'user_id')
+//  .innerJoin('comments', 'work_id', 'post_number').insert
 
 module.exports = app;
