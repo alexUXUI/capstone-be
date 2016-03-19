@@ -9,8 +9,8 @@ var base64url = require("base64-url");
 var PaypalTokenStrategy = require('passport-paypal-token');
 
 passport.use(new PaypalTokenStrategy({
-    clientID: 'ARPGDP8XfK_IilyUmwT2yDojtxHeFnvNPkOKem1of_2SMHm29fKlawvsiHF_hb6C8gw99kHfmR6TW_B6',
-    clientSecret: 'EK-GsYpIupfZDiaSESNz_7nOFYwpTBnEu_ltEa9TkIGC1A50Nt2pCMkIt7pUhoUw0slbqAMarBWMsoyF',
+    clientID: '934498239022-pcfu63fbff1399mm6ghj8kcnfnpcqkva.apps.googleusercontent.com',
+    clientSecret: 'EK-BdABY8vW57ONdQNfUAuEL-EB',
     openid_redirect_uri: 'http://localhost:3000/paypal',
     passReqToCallback: true
 }, function(req, accessToken, refreshToken, profile, next) {
