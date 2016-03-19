@@ -22,7 +22,7 @@ passport.use(new PaypalTokenStrategy({
 passport.use(new GoogleStrategy({
     clientID: '584410631450-198uljradcms25p3nl7j8k4ghgnmjovu.apps.googleusercontent.com',
     clientSecret: 'Mp4vMZMwuvO9DLl-_DwVjplY',
-    callbackURL: 'http://localhost:3000/auth/google/callback'
+    callbackURL: 'https://rebelmarkets.firebaseapp.com/#/google/callback'
   },
   function(req, token, refreshToken, profile, done) {
     process.nextTick(function() {
@@ -60,7 +60,7 @@ router.get('/google/callback', function(req, res, next) {
        var token = jwt.sign(user, "123", {
          expiresIn:'1d',
        })
-       var authUrl = "http://localhost:8080/#/validating/" + token;
+       var authUrl = "https://rebelmarkets.firebaseapp.com/#/validating/" + token;
        res.redirect(authUrl);
      } else if (info) {
        next(info);
