@@ -56,7 +56,9 @@ router.get('/create', function(req, res, next){
       res.json({error: error});
     } else {
       req.session.paymentId = payment.id;
-      res.json({payment: payment});
+      console.log("HERES THE PAYMENT OBJECT", payment);
+      res.render('success', {'payment': payment});
+      // res.json({payment: payment})
     }
   });
 })
