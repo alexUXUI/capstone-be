@@ -1,8 +1,32 @@
 extends layout
 
 block content
-  h1= Congrats
-  p Welcome to #{title}
-  p your payment was approved!
-  p sweet
-  h1 #{payment.id}
+  h1 #{payment.state}
+  p #{payment.id}
+  p #{payment.create_time}
+  p #{payment.update_time}
+  h2 #{payment.intent}
+  p #{payment.payer.payment_method}
+  p #{payment.payer.funding_instruments[0].credit_card.type}
+  p #{payment.payer.funding_instruments[0].credit_card.number}
+  p #{payment.payer.funding_instruments[0].credit_card.expire_month} #{payment.payer.funding_instruments[0].credit_card.expire_year}
+  h2 #{payment.payer.funding_instruments[0].credit_card.first_name} #{payment.payer.funding_instruments[0].credit_card.last_name}
+  h2 #{payment.transactions[0].amount.total}
+  h2 #{payment.transactions[0].related_resources[0].sale.state}
+  p #{payment.transactions[0].related_resources[0].sale.id}
+  p #{payment.transactions[0].related_resources[0].sale.parent_payment}
+
+
+  a(href='http://localhost:8080/#/content') Back to Home
+
+  script.
+    function sendMail() {
+        var link = "mailto:alexandergraybennett@gmail.com"
+                 + "?cc=alexandergraybennett@gmail.com"
+                 + "&subject=" + escape("Reciept from Rebel Markets")
+                 + "&body=" + escape("hello from the body")
+        ;
+        window.location.href = link;
+    }
+
+  button(onclick='sendMail()') Click
