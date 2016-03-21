@@ -12,7 +12,7 @@ require('dotenv').load();
 passport.use(new PaypalTokenStrategy({
     clientID: 'ARPGDP8XfK_IilyUmwT2yDojtxHeFnvNPkOKem1of_2SMHm29fKlawvsiHF_hb6C8gw99kHfmR6TW_B6',
     clientSecret: 'EK-GsYpIupfZDiaSESNz_7nOFYwpTBnEu_ltEa9TkIGC1A50Nt2pCMkIt7pUhoUw0slbqAMarBWMsoyF',
-    openid_redirect_uri: 'http://localhost:3000/paypal',
+    openid_redirect_uri: 'https://rebelmarkets.herokuapp.com/paypal',
     passReqToCallback: true
 }, function(req, accessToken, refreshToken, profile, next) {
     User.findOrCreate({'paypal.id': profile.id}, function(error, user) {
