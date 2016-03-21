@@ -52,9 +52,12 @@ passport.use(new GoogleStrategy({
 );
 
 router.get('/google/callback', function(req, res, next) {
-  console.log('hitting get page');
+
+  console.log('getting into callback');
+
    passport.authenticate('google', function(err, user, info) {
      if (err) {
+
        console.log('redirected to error');
        next(err);
      } else if (user) {
@@ -65,7 +68,8 @@ router.get('/google/callback', function(req, res, next) {
        var authUrl = "https://rebelmarkets.firebaseapp.com/validating" + token;
        res.redirect(authUrl);
      } else if (info) {
-       console.log('redirected to info');
+       console.log('super spaced out comment to see if in info');
+
        next(info);
      }
    })(req, res, next);
