@@ -51,8 +51,11 @@ passport.use(new GoogleStrategy({
   })
 );
 
-router.get('/google/callback', passport.authenticate('google', {failureRedirect: '/login'}), function(req, res, next) {
+router.get('/google/callback', function(req, res, next) {
+  console.log('hitting get page');
+   passport.authenticate('google', function(err, user, info) {
      if (err) {
+       console.log('redirected to error');
        next(err);
      } else if (user) {
        console.log('this is the user object: ', user);
@@ -62,10 +65,11 @@ router.get('/google/callback', passport.authenticate('google', {failureRedirect:
        var authUrl = "https://rebelmarkets.firebaseapp.com/validating" + token;
        res.redirect(authUrl);
      } else if (info) {
+       console.log('redirected to info');
        next(info);
      }
+   })(req, res, next);
  });
-
 
  router.get('/google', passport.authenticate('google', {
      scope: 'email',
