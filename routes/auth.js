@@ -51,8 +51,7 @@ passport.use(new GoogleStrategy({
   })
 );
 
-router.get('/google/callback', function(req, res, next) {
-   passport.authenticate('google', function(err, user, info) {
+router.get('/google/callback', passport.authenticate('google', function(err, user, info) {
      if (err) {
        next(err);
      } else if (user) {
@@ -66,7 +65,7 @@ router.get('/google/callback', function(req, res, next) {
        next(info);
      }
    })(req, res, next);
- });
+ );
 
  router.get('/google', passport.authenticate('google', {
      scope: 'email',
