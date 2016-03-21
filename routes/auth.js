@@ -11,7 +11,7 @@ var PaypalTokenStrategy = require('passport-paypal-token');
 passport.use(new PaypalTokenStrategy({
     clientID: 'ARPGDP8XfK_IilyUmwT2yDojtxHeFnvNPkOKem1of_2SMHm29fKlawvsiHF_hb6C8gw99kHfmR6TW_B6',
     clientSecret: 'EK-GsYpIupfZDiaSESNz_7nOFYwpTBnEu_ltEa9TkIGC1A50Nt2pCMkIt7pUhoUw0slbqAMarBWMsoyF',
-    openid_redirect_uri: 'http://localhost:3000/paypal',
+    openid_redirect_uri: 'https://rebelmarkets.herokuapp.com/paypal',
     passReqToCallback: true
 }, function(req, accessToken, refreshToken, profile, next) {
     User.findOrCreate({'paypal.id': profile.id}, function(error, user) {
@@ -20,9 +20,9 @@ passport.use(new PaypalTokenStrategy({
 }));
 
 passport.use(new GoogleStrategy({
-    clientID: '584410631450-198uljradcms25p3nl7j8k4ghgnmjovu.apps.googleusercontent.com',
-    clientSecret: 'Mp4vMZMwuvO9DLl-_DwVjplY',
-    callbackURL: 'http://localhost:3000/auth/google/callback'
+    clientID: '275829612244-f07p9pqdl7r6v1hdu9s7st6kqcv2824a.apps.googleusercontent.com',
+    clientSecret: 'rcHUa6yFSsR6B7I7AyTeTxbL',
+    callbackURL: 'https://rebelmarkets.herokuapp.com/google/callback'
   },
   function(req, token, refreshToken, profile, done) {
     process.nextTick(function() {
