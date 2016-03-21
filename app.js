@@ -19,6 +19,7 @@ var paypal = require('paypal-rest-sdk');
 var paypalRoute = require('./routes/paypal');
 var PaypalTokenStrategy = require('passport-paypal-token');
 var session = require('express-session');
+require('dotenv').load();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

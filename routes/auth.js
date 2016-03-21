@@ -7,11 +7,12 @@ var knex = require('../db/knex');
 var jwt = require('jsonwebtoken');
 var base64url = require("base64-url");
 var PaypalTokenStrategy = require('passport-paypal-token');
+require('dotenv').load();
 
 passport.use(new PaypalTokenStrategy({
     clientID: 'ARPGDP8XfK_IilyUmwT2yDojtxHeFnvNPkOKem1of_2SMHm29fKlawvsiHF_hb6C8gw99kHfmR6TW_B6',
     clientSecret: 'EK-GsYpIupfZDiaSESNz_7nOFYwpTBnEu_ltEa9TkIGC1A50Nt2pCMkIt7pUhoUw0slbqAMarBWMsoyF',
-    openid_redirect_uri: 'https://rebelmarkets.herokuapp.com/paypal',
+    openid_redirect_uri: 'http://localhost:3000/paypal',
     passReqToCallback: true
 }, function(req, accessToken, refreshToken, profile, next) {
     User.findOrCreate({'paypal.id': profile.id}, function(error, user) {
@@ -20,9 +21,9 @@ passport.use(new PaypalTokenStrategy({
 }));
 
 passport.use(new GoogleStrategy({
-    clientID: '275829612244-f07p9pqdl7r6v1hdu9s7st6kqcv2824a.apps.googleusercontent.com',
-    clientSecret: 'rcHUa6yFSsR6B7I7AyTeTxbL',
-    callbackURL: 'https://rebelmarkets.herokuapp.com/auth/google/callback'
+    clientID: process.env.GOOGLE_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.HOST + 'auth/google/callback'
   },
   function(req, token, refreshToken, profile, done) {
     process.nextTick(function() {
@@ -52,24 +53,17 @@ passport.use(new GoogleStrategy({
 );
 
 router.get('/google/callback', function(req, res, next) {
-
-  console.log('getting into callback');
-
    passport.authenticate('google', function(err, user, info) {
      if (err) {
-
-       console.log('redirected to error');
        next(err);
      } else if (user) {
        console.log('this is the user object: ', user);
        var token = jwt.sign(user, "123", {
          expiresIn:'1d',
        })
-       var authUrl = "https://rebelmarkets.firebaseapp.com/validating" + token;
+       var authUrl = "http://localhost:8080/#/validating/" + token;
        res.redirect(authUrl);
      } else if (info) {
-       console.log('super spaced out comment to see if in info');
-
        next(info);
      }
    })(req, res, next);
