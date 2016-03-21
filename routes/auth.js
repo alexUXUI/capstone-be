@@ -60,7 +60,7 @@ router.get('/google/callback', function(req, res, next) {
        var token = jwt.sign(user, "123", {
          expiresIn:'1d',
        })
-       var authUrl = "http://localhost:8080/#/validating/" + token;
+       var authUrl = "https://rebelmarkets.firebaseapp.com/validating" + token;
        res.redirect(authUrl);
      } else if (info) {
        next(info);
