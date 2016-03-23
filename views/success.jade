@@ -2,23 +2,23 @@ extends layout
 
 block content
 
+  #container.rebel
+    h1.brandOne Rebel
+    h1.brandTwo Markets
 
-  h1.brandOne Rebel
-  h1.brandTwo Markets
+    h1 #{payment.state}
+    p #{payment.id}
+    p #{payment.create_time}
+    p #{payment.update_time}
+    h2 #{payment.intent}
+    p #{payment.payer.payment_method}
+    p #{payment.payer.funding_instruments[0].credit_card.type}
+    p #{payment.payer.funding_instruments[0].credit_card.number}
+    p #{payment.payer.funding_instruments[0].credit_card.expire_month} #{payment.payer.funding_instruments[0].credit_card.expire_year}
+    h2 #{payment.payer.funding_instruments[0].credit_card.first_name} #{payment.payer.funding_instruments[0].credit_card.last_name}
+    h2 #{payment.transactions[0].amount.total}
+    h2 #{payment.transactions[0].related_resources[0].sale.state}
+    p #{payment.transactions[0].related_resources[0].sale.id}
+    p #{payment.transactions[0].related_resources[0].sale.parent_payment}
 
-  h1 #{payment.state}
-  p #{payment.id}
-  p #{payment.create_time}
-  p #{payment.update_time}
-  h2 #{payment.intent}
-  p #{payment.payer.payment_method}
-  p #{payment.payer.funding_instruments[0].credit_card.type}
-  p #{payment.payer.funding_instruments[0].credit_card.number}
-  p #{payment.payer.funding_instruments[0].credit_card.expire_month} #{payment.payer.funding_instruments[0].credit_card.expire_year}
-  h2 #{payment.payer.funding_instruments[0].credit_card.first_name} #{payment.payer.funding_instruments[0].credit_card.last_name}
-  h2 #{payment.transactions[0].amount.total}
-  h2 #{payment.transactions[0].related_resources[0].sale.state}
-  p #{payment.transactions[0].related_resources[0].sale.id}
-  p #{payment.transactions[0].related_resources[0].sale.parent_payment}
-
-  a(href='https://rebelmarkets.firebaseapp.com/#/content') Back to Home
+    a(href='https://rebelmarkets.firebaseapp.com/#/content') Back to Home
