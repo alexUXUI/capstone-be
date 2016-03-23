@@ -137,7 +137,7 @@ app.get('/profile/:id', function(req, res, next){
   })
 })
 
-app.get('/post/like/:id', function(req, res, next){
+app.get('/like/:id', function(req, res, next){
   var workId = req.params.id;
   console.log('hitting like route with this work id: ', workId);
   knex('work').where('id', workId).update('likes', 100)
