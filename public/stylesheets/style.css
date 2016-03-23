@@ -10,15 +10,16 @@ a {
 }
 
 .brandOne {
-  margin-top: 175px;
-  font-size: 10em;
+  margin-top: 50px;
+  padding-top: 50px;
+  font-size: 8em;
   font-family: 'Kaushan Script', cursive;
   line-height: .3em;
   color: #FF333A;
 }
 
 .brandTwo {
-  font-size: 4.5em;
+  font-size: 3.55em;
   font-family: 'Playfair Display', serif;
   letter-spacing: 10px;
   margin-left: 20px;
