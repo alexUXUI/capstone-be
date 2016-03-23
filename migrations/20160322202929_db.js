@@ -19,7 +19,7 @@ exports.up = function(knex, Promise) {
       table.text('hashtag');
       table.boolean('for_sale');
       table.integer('price');
-      table.integer('likes');
+      table.integer('likes').defaultTo(0);
       table.text('comments');
       table.integer('user_id').references('id').inTable('user_table').onDelete('CASCADE');
     }),
