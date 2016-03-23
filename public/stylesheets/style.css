@@ -6,3 +6,17 @@ body {
 a {
   color: #00B7FF;
 }
+
+.brandOne {
+  font-size: 10em;
+  font-family: 'Kaushan Script', cursive;
+  line-height: .3em;
+  color: #FF333A;
+}
+
+.brandTwo {
+  font-size: 4.5em;
+  font-family: 'Playfair Display', serif;
+  letter-spacing: 10px;
+  margin-left: 20px;
+}
