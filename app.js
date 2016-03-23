@@ -140,7 +140,7 @@ app.get('/profile/:id', function(req, res, next){
 app.get('/like/:id', function(req, res, next){
   var workId = req.params.id;
   console.log('hitting like route with this work id: ', workId);
-  knex('work').where('id', workId).update('likes', 1).increment('likes', 1)
+  knex('work').where('id', workId).update('likes', 2)
   .then(function(data){
     res.json({data: data})
   })
